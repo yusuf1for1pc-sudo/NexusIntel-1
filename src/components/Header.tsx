@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export default function Header({ theme = "dark" }: { theme?: "dark" | "light" }) {
+export default function Header() {
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
   const [tensionIndex] = useState(8.4);
@@ -28,9 +28,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
   const tensionColor = tensionIndex >= 8 ? "#FF2244" : tensionIndex >= 6 ? "#FF8C00" : "#00FF88";
 
   return (
-    <header className={`glass-panel flex items-center justify-between px-4 py-2 h-14 shrink-0 relative overflow-hidden scan-effect ${
-      theme === "light" ? "bg-white/80 border-[#1A2B5E]/10" : ""
-    }`}>
+    <header className="glass-panel flex items-center justify-between px-4 py-2 h-14 shrink-0 relative overflow-hidden scan-effect">
       {/* Background grid */}
       <div className="absolute inset-0 grid-bg opacity-50 pointer-events-none" />
 
@@ -86,10 +84,9 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
         {/* Active theaters */}
         <div className="flex gap-4">
           {[
-            { label: "Threat Level", value: "8.4", color: "#EF4444" },
-            { label: "Active Alerts", value: "23", color: "#F59E0B" },
-            { label: "Entities", value: "147", color: "#10B981" },
-            { label: "Sources", value: "58", color: "#00D4FF" },
+            { label: "Active Conflicts", value: "23", color: "#FF2244" },
+            { label: "Monitored Zones", value: "147", color: "#00D4FF" },
+            { label: "Alerts Today", value: "58", color: "#FF8C00" },
           ].map((item) => (
             <div key={item.label} className="text-center">
               <div className="font-orbitron text-base font-bold counter-animate" style={{ color: item.color, textShadow: `0 0 10px ${item.color}` }}>

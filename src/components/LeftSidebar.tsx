@@ -1,22 +1,5 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { 
-  BarChart3, 
-  Globe, 
-  Shield, 
-  TrendingUp, 
-  Network, 
-  CloudRain, 
-  Cpu, 
-  FileText, 
-  Home, 
-  Settings, 
-  AlertTriangle,
-  LogIn
-} from "lucide-react";
-import { motion } from "framer-motion";
 import DefenseModal from "./DefenseModal";
 import AllDealsModal from "./AllDealsModal";
 
@@ -28,22 +11,7 @@ const tickerItems = [
   "🚀 BREAKING: Intercontinental ballistic missile test confirmed",
 ];
 
-const navItems = [
-  { name: "Home", path: "/", icon: Home },
-  { name: "Login", path: "/login", icon: LogIn },
-  { name: "Global Intelligence Overview", path: "/overview", icon: Globe },
-  { name: "AI Strategic Analysis", path: "/analysis", icon: BarChart3 },
-  { name: "Global Economic Intelligence", path: "/economics", icon: TrendingUp },
-  { name: "Global Power Network", path: "/power-network", icon: Network },
-  { name: "Climate & Environmental Risk", path: "/climate", icon: CloudRain },
-  { name: "Technology Intelligence", path: "/technology", icon: Cpu },
-  { name: "Domestic Intelligence Monitor", path: "/domestic", icon: Shield },
-  { name: "Strategic Intelligence Reports", path: "/reports", icon: FileText },
-  { name: "System Intelligence Status", path: "/system", icon: Settings },
-];
-
 export default function LeftSidebar() {
-  const pathname = usePathname();
   const feedRef = useRef<HTMLDivElement>(null);
   const [scrollPos, setScrollPos] = useState(0);
   
@@ -84,19 +52,19 @@ export default function LeftSidebar() {
     if (feedRef.current) feedRef.current.scrollTop = scrollPos;
   }, [scrollPos]);
 
-  // Map our smart colors to the requested values
+  // Map our smart colors to tailwind/hex UI colors
   const colorMap: Record<string, string> = {
-    "red": "#EF4444",
-    "green": "#10B981",
-    "orange": "#F59E0B",
-    "yellow-orange": "#F59E0B",
+    "red": "#FF2244",
+    "green": "#00FF88",
+    "orange": "#FF8C00",
+    "yellow-orange": "#FFD700",
     "light-blue": "#00D4FF"
   };
 
   const tagMap: Record<string, string> = {
     "red": "CRITICAL",
-    "green": "STABLE",
-    "orange": "MODERATE",
+    "green": "POSITIVE",
+    "orange": "DOMESTIC ALERT",
     "yellow-orange": "UPCOMING RISK",
     "light-blue": "NATION POSITIVE"
   };
@@ -112,43 +80,6 @@ export default function LeftSidebar() {
   return (
     <>
       <div className="flex flex-col gap-1.5 h-full overflow-hidden relative">
-        {/* Navigation Section */}
-        <div className="glass-panel p-2 flex flex-col shrink-0">
-          <div className="section-header mb-1 text-[10px]">
-            <span className="text-neon-blue">◈</span> SYSTEM NAVIGATION
-          </div>
-          <nav className="space-y-0.5">
-            {navItems.map((item) => {
-              const isActive = pathname === item.path;
-              const Icon = item.icon;
-              return (
-                <Link 
-                  key={item.path} 
-                  href={item.path}
-                  className={`flex items-center gap-2 px-2 py-1.5 rounded transition-all group relative overflow-hidden ${
-                    isActive 
-                      ? "bg-neon-blue/20 border border-neon-blue/40" 
-                      : "hover:bg-white/5 border border-transparent"
-                  }`}
-                >
-                  {isActive && (
-                    <motion.div 
-                      layoutId="nav-active"
-                      className="absolute left-0 top-0 bottom-0 w-0.5 bg-neon-blue shadow-[0_0_10px_#00D4FF]"
-                    />
-                  )}
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-neon-blue" : "text-text-secondary group-hover:text-white"}`} />
-                  <span className={`text-[10px] font-medium tracking-tight whitespace-nowrap ${
-                    isActive ? "text-white font-bold" : "text-text-secondary group-hover:text-white"
-                  }`}>
-                    {item.name}
-                  </span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-
         {/* Live Events Feed */}
         <div className="glass-panel p-2.5 flex flex-col flex-1 overflow-hidden min-h-0 relative">
           <div className="section-header">

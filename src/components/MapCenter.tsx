@@ -35,10 +35,9 @@ const mapModes = ["Standard", "Satellite Clouds 🛰️", "Live Precip 🌧️",
 interface MapCenterProps {
   isMaximized?: boolean;
   onToggleMaximize?: () => void;
-  theme?: "dark" | "light";
 }
 
-export default function MapCenter({ isMaximized = false, onToggleMaximize, theme = "dark" }: MapCenterProps) {
+export default function MapCenter({ isMaximized = false, onToggleMaximize }: MapCenterProps) {
   const mapRef = useRef<any>(null);
   
   // Base layers
