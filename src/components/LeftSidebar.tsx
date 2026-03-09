@@ -79,10 +79,10 @@ export default function LeftSidebar() {
 
   return (
     <>
-      <div className="flex flex-col gap-1.5 h-full overflow-hidden relative">
+      <div className="flex flex-col gap-2 h-full overflow-y-auto thin-scroll relative pr-1 pb-4">
         {/* Live Events Feed */}
-        <div className="glass-panel p-2.5 flex flex-col flex-1 overflow-hidden min-h-0 relative">
-          <div className="section-header">
+        <div className="glass-panel p-2.5 flex flex-col shrink-0 h-[450px] relative">
+          <div className="section-header hover:bg-white/5 cursor-pointer transition-colors rounded" onClick={() => window.location.href = '/defense-intelligence'}>
             <div className="live-dot" />
             Global Live News Feed
           </div>
@@ -149,9 +149,20 @@ export default function LeftSidebar() {
         </div>
 
         {/* Live Defense Deals */}
-        <div className="glass-panel p-2.5 flex flex-col" style={{ flexBasis: '40%' }}>
-          <div className="section-header">
-            <span className="text-neon-orange">⚔</span> Defense News & Strategic Deals
+        <div className="glass-panel p-2.5 flex flex-col shrink-0 h-[400px]">
+          <div 
+            className="section-header hover:bg-white/5 cursor-pointer transition-colors rounded flex items-center justify-between group"
+            onClick={() => window.location.href = '/defense-intelligence'}
+          >
+            <div>
+              <span className="text-neon-orange">⚔</span> Defense News & Strategic Deals
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-text-muted font-bold tracking-tighter uppercase group-hover:text-white transition-colors">
+                SEE DETAILS
+              </span>
+              <span className="text-neon-orange group-hover:translate-x-1 transition-transform">→</span>
+            </div>
           </div>
           
           {defenseDeals.length === 0 ? (

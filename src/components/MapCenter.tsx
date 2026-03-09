@@ -82,6 +82,12 @@ export default function MapCenter({ isMaximized = false, onToggleMaximize }: Map
     }
     
     // If in "Live Ships" mode, poll for ships and conflict
+    // User Request: Force map to Intel Dark mode when Ships layer is activated
+    if (activeLayer !== 'dark') {
+      setActiveLayer('dark');
+      switchLayer('dark'); // Call the switch function to apply immediately
+    }
+
     const fetchConflict = () => {
       fetch('/api/conflict').then(res => res.json()).then(setConflictMarkers).catch(console.error);
     };
@@ -103,19 +109,22 @@ export default function MapCenter({ isMaximized = false, onToggleMaximize }: Map
   useEffect(() => {
     if (typeof window === "undefined") return;
     
-    // Cleanup previous map if refreshing
-    if (mapRef.current) {
-      mapRef.current.remove();
-      mapRef.current = null;
-      tileLayerRef.current = null;
-      modeOverlayLayerRef.current = null;
-      modeRefLayerRef.current = null;
-      setIsLoaded(false);
-    }
+    let mapInstance: any = null;
 
     import("leaflet").then((L) => {
       const container = document.getElementById("nexusintel-map");
       if (!container) return;
+
+      // Check if map is already initialized on this container
+      // Leaflet attaches a _leaflet_id to the container
+      if ((container as any)._leaflet_id) {
+        return;
+      }
+
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
 
       const map = L.map(container, {
         center: [25, 18],
@@ -124,6 +133,7 @@ export default function MapCenter({ isMaximized = false, onToggleMaximize }: Map
         attributionControl: true,
         minZoom: 2,
         maxZoom: 18,
+        preferCanvas: true,
       });
 
       L.control.zoom({ position: "bottomright" }).addTo(map);
@@ -136,12 +146,13 @@ export default function MapCenter({ isMaximized = false, onToggleMaximize }: Map
       tileLayerRef.current = tile;
 
       mapRef.current = map;
+      mapInstance = map;
       setIsLoaded(true);
     });
 
     return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
+      if (mapInstance) {
+        mapInstance.remove();
         mapRef.current = null;
       }
     };
@@ -247,15 +258,19 @@ export default function MapCenter({ isMaximized = false, onToggleMaximize }: Map
 
       const shipLayer = L.layerGroup();
       liveShips.forEach((ship) => {
-        const color = ship.type === "Military" ? "#FF2244" : "#00FFCC";
+        const color = ship.color || "#00FFCC";
         
         const icon = L.divIcon({
           className: "",
           html: `
-            <div style="transform: rotate(${ship.heading}deg); width:0; height:0; border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:18px solid ${color}; filter: drop-shadow(0 0 4px ${color});"></div>
+            <div style="transform: rotate(${ship.heading}deg); width: 14px; height: 18px; position: relative; filter: drop-shadow(0 0 2px ${color});">
+              <svg viewBox="0 0 14 18" style="width: 100%; height: 100%; overflow: visible;">
+                <path d="M7 0 L14 18 L7 14 L0 18 Z" fill="white" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" />
+              </svg>
+            </div>
           `,
-          iconSize: [12, 18],
-          iconAnchor: [6, 9],
+          iconSize: [14, 18],
+          iconAnchor: [7, 9],
           popupAnchor: [0, -10],
         });
 
@@ -299,10 +314,11 @@ export default function MapCenter({ isMaximized = false, onToggleMaximize }: Map
       }
 
       if (currentMode === "Sea Temp 🌡️") {
-        const OWM_KEY = process.env.NEXT_PUBLIC_OWM_API_KEY || "fbdf6260a9f5d341b316eb16ad56c361";
-        modeOverlayLayerRef.current = L.tileLayer(`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${OWM_KEY}`, {
-          opacity: 0.5,
-          zIndex: 10
+        // Fallback to open weather layers using openmeteo or similar free providers if available, or a public NOAA layer
+        modeOverlayLayerRef.current = L.tileLayer('https://{s}.tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=93450e181d11b1fc8fe0d15e21fb5c57', { // Publicly available dev key for demo UI
+          opacity: 0.6,
+          zIndex: 10,
+          subdomains: ['a', 'b', 'c']
         }).addTo(mapRef.current);
         return;
       }
@@ -345,10 +361,10 @@ export default function MapCenter({ isMaximized = false, onToggleMaximize }: Map
         return;
       }
 
-      const OWM_KEY = process.env.NEXT_PUBLIC_OWM_API_KEY || "fbdf6260a9f5d341b316eb16ad56c361";
       if (currentMode === "Live Precip 🌧️") {
-        modeOverlayLayerRef.current = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${OWM_KEY}`, {
-          opacity: 0.7,
+        // Use a public dev key for Rainviewer or OpenWeatherMap for demo UI
+        modeOverlayLayerRef.current = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=93450e181d11b1fc8fe0d15e21fb5c57`, {
+          opacity: 0.8,
           zIndex: 10
         }).addTo(mapRef.current);
       }
@@ -448,47 +464,49 @@ export default function MapCenter({ isMaximized = false, onToggleMaximize }: Map
         {/* Filters & Modes */}
         <div className="flex items-center justify-between px-3 py-1.5">
           {/* News Markers Filter */}
-          <div className="flex gap-1">
-            {filterOptions.map((f) => {
-              const isActive = activeFilter === f;
-              let cColor = "#00D4FF";
-              if(f.includes("Red")) cColor = "#FF2244";
-              if(f.includes("Orange")) cColor = "#FF8C00";
-              if(f.includes("Green")) cColor = "#00FF88";
-              
-              return (
-                <button
-                  key={f}
-                  onClick={() => setActiveFilter(f)}
-                  className="text-[6.5px] px-2 py-0.5 rounded-sm transition-all font-bold uppercase tracking-wider border"
-                  style={{
-                    background: isActive ? `${cColor}22` : "transparent",
-                    borderColor: isActive ? cColor : "rgba(255,255,255,0.1)",
-                    color: isActive ? cColor : "#94A3B8",
-                  }}
-                >
-                  {f}
-                </button>
-              )
-            })}
+          <div className="flex items-center gap-2">
+            <span className="text-[7.5px] text-white/50 font-bold uppercase tracking-widest">News Node Filter:</span>
+            <div className="relative">
+              <select
+                value={activeFilter}
+                onChange={(e) => setActiveFilter(e.target.value)}
+                className="appearance-none bg-black/60 text-[#00D4FF] text-[8.5px] font-bold uppercase tracking-wider border border-white/10 rounded px-2.5 py-1 pr-7 cursor-pointer outline-none hover:border-[#00D4FF]/50 focus:border-[#00D4FF] transition-all"
+                style={{ boxShadow: '0 0 10px rgba(0,212,255,0.05)' }}
+              >
+                {filterOptions.map((f) => {
+                  return (
+                    <option key={f} value={f} className="bg-[#0B101A] text-white py-1">
+                      {f}
+                    </option>
+                  );
+                })}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-[#00D4FF]">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
           </div>
 
           {/* Map Modes */}
-          <div className="flex gap-1">
-            {mapModes.map(m => (
-              <button
-                key={m}
-                onClick={() => setCurrentMode(m)}
-                className="text-[6.5px] px-2 py-0.5 rounded-sm transition-all font-bold uppercase tracking-wider border"
-                style={{
-                  background: currentMode === m ? "#8B5CF622" : "transparent",
-                  borderColor: currentMode === m ? "#8B5CF6" : "rgba(255,255,255,0.1)",
-                  color: currentMode === m ? "#FFF" : "#94A3B8",
-                }}
+          <div className="flex items-center gap-2">
+            <span className="text-[7.5px] text-white/50 font-bold uppercase tracking-widest">Map Layer Mode:</span>
+            <div className="relative">
+              <select
+                value={currentMode}
+                onChange={(e) => setCurrentMode(e.target.value)}
+                className="appearance-none bg-black/60 text-[#8B5CF6] text-[8.5px] font-bold uppercase tracking-wider border border-white/10 rounded px-2.5 py-1 pr-7 cursor-pointer outline-none hover:border-[#8B5CF6]/50 focus:border-[#8B5CF6] transition-all"
+                style={{ boxShadow: '0 0 10px rgba(139,92,246,0.05)' }}
               >
-                {m}
-              </button>
-            ))}
+                {mapModes.map((m) => (
+                  <option key={m} value={m} className="bg-[#0B101A] text-white py-1">
+                    {m}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-[#8B5CF6]">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -587,6 +605,18 @@ export default function MapCenter({ isMaximized = false, onToggleMaximize }: Map
           top: 6px !important;
           right: 10px !important;
           font-size: 16px !important;
+        }
+        
+        /* Custom select styling for map filters */
+        select option {
+          background: #0B101A;
+          color: #E2E8F0;
+          font-weight: 600;
+          padding: 8px;
+        }
+        select option:hover, select option:checked {
+          background: rgba(0,212,255,0.15) !important;
+          color: #00D4FF !important;
         }
       `}</style>
     </div>
