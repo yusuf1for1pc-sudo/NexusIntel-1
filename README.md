@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+NexusIntel — AI Global Intelligence Graph
 
-## Getting Started
+NexusIntel is an AI-powered intelligence platform that connects global data across governance, economics, climate, geopolitics, and society to generate real-time strategic insights for decision-makers.
+The system uses AI processing, ontology modeling, and a knowledge graph to transform fragmented information into connected intelligence signals that support faster and more informed decision making.
 
-First, run the development server:
+🔗 Demo / Access
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Demo Video: 
+Live URL:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🚀 What the System Does:-
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+-  Aggregates global data signals from multiple domains
+-  Extracts entities, events, and relationships using AI
+-  Builds a cross-domain knowledge graph of intelligence signalsDetects patterns and correlations across domains
+-  Generates strategic alerts and insights for decision-makers
+-  Visualizes intelligence data through an interactive dashboard
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🧠 Intelligence Dashboard Provides
 
-## Learn More
+-  🌍 Global signal monitoring map
+-  📊 Real-time trend analysis across domains
+-  🚨 Strategic alert system for emerging risks
+-  📈 Domain-wise data insights and analytics
+-  🔗 Knowledge graph visualization of relationships
+-  📡 Multi-domain intelligence monitoring
 
-To learn more about Next.js, take a look at the following resources:
+⚡ Key Capabilities
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-  🕸 Cross-Domain Knowledge Graph — Connects events, entities, and signals across domains
+-  🧠 AI Signal Extraction — Extracts structured intelligence from unstructured data
+-  ⚡ Real-Time Insight Engine — Detects patterns and correlations across global signals
+-  📊 Decision Intelligence Dashboard — Delivers strategic insights for analysts and policymakers
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+🏛 Intelligence Domains Covered
 
-## Deploy on Vercel
+NexusIntel integrates signals across multiple domains:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+-  🌍 Geopolitics — diplomatic developments, conflicts, global events
+-  📊 Economics — inflation, trade indicators, supply chains
+-  🌦 Climate — weather alerts, disasters, environmental signals
+-  🏛 Governance — public policy announcements and programs
+-  👥 Society — public sentiment and social signals
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🛠 Tech Stack
+
+Frontend
+
+-  React + TypeScript + Vite
+
+UI / Visualization
+
+-  Tailwind CSS
+-  shadcn/ui
+-  Recharts / D3.js
+
+Backend
+
+-  FastAPI (Python)
+-  Database
+-  Neo4j Knowledge Graph
+-  PostgreSQL / Supabase
+
+AI / NLP
+
+-  spaCy
+-  HuggingFace Transformers
+-  Google Gemini API
+
+Maps & Visualization
+
+-  Leaflet.js
+-  Graph visualization libraries
+
+📷 Screenshots
+
+
+
+
+<img width="1897" height="909" alt="image" src="https://github.com/user-attachments/assets/1d991c26-e173-40e5-b5b1-8645e1a96b1c" />
+
+
+
+<img width="1166" height="558" alt="image" src="https://github.com/user-attachments/assets/6815cf60-5b66-42e1-abf8-faa3fb060c82" />
+
+
+
+
+<img width="1339" height="633" alt="image" src="https://github.com/user-attachments/assets/41071383-d694-4f83-a009-a97d0b3baab3" />
+
+
+<img width="1322" height="847" alt="image" src="https://github.com/user-attachments/assets/83b67a49-7e2a-4023-832c-0a51bd984c67" />
+
+
+
+<img width="1350" height="802" alt="image" src="https://github.com/user-attachments/assets/88f54aee-739c-4c02-b50b-7e568c7d55da" />
+
+
+
+<img width="1412" height="862" alt="image" src="https://github.com/user-attachments/assets/1432a6e2-f84f-4cbf-84c3-2cf5adadc5f0" />
+
+
+
+
+
+
+
+
+
+
